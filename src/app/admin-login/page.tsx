@@ -20,6 +20,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 via-cyan-100 to-cyan-400">
       <LoginForm onSubmit={handleLogin} />
+
     </div>
   );
 }
