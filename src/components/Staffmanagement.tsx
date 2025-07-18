@@ -67,16 +67,6 @@ const StaffManagement = () => {
         console.log('View profile:', staffId);
     };
 
-    const sidebarItems = [
-        { icon: Grid3x3, label: 'Dashboard', active: false },
-        { icon: Users, label: 'Staff Management', active: true },
-        { icon: Network, label: 'Network', active: false },
-        { icon: Package, label: 'Products', active: false },
-        { icon: Archive, label: 'Archive', active: false },
-        { icon: FileText, label: 'Reports', active: false },
-        { icon: Settings, label: 'Settings', active: false }
-    ];
-
     const filteredStaff = staffData.filter(staff => {
         const matchesFilter = activeFilter === 'All' || staff.role === activeFilter;
         const matchesSearch = staff.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -85,17 +75,10 @@ const StaffManagement = () => {
     });
 
     return (
-        <div className="flex h-screen bg-gradient-to-br from-pink-100 via-blue-50 to-teal-100">
+        <div className="flex h-100 bg-gradient-to-br from-pink-100 via-blue-50 to-teal-100">
 
             {/* Main Content */}
             <div className="flex-1 p-8">
-                {/* Header */}
-                <div className="mb-8">
-                    <div className="flex items-center mb-2">
-                        <h1 className="text-2xl font-bold text-gray-800">Staff Management</h1>
-                    </div>
-                    <p className="text-gray-600">Manage all employees and their roles.</p>
-                </div>
 
                 {/* Search and Add Button */}
                 <div className="flex justify-between items-center mb-6">
