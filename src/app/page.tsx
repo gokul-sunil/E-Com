@@ -1,9 +1,10 @@
 import Image from "next/image";
-
+import Dashboard from "@/components/Dashboard";
+import App from "@/components/App";
 export default function Home() {
   return (
   <div>
-    <h1>Hello world</h1>
+     <div><App /></div>
   </div>
   );
 }
