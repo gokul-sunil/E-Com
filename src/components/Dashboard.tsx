@@ -141,7 +141,8 @@ const DashboardContent = () => {
       </div>
 
       {/* Recent Activities */}
-      <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6">
+      <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 overflow-y-auto max-h-[300px]">
+
         <h3 className="text-xl font-bold text-gray-800 mb-6">Recent Activities</h3>
         
         <div className="space-y-4">
