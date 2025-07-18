@@ -10,7 +10,7 @@ type HeaderProps = {
 
 const Header: React.FC<HeaderProps> = ({ title, subtitle }) => {
   return (
-    <header className="bg-white/80 backdrop-blur-sm shadow-sm p-6 border-b border-gray-200">
+    <header className=" backdrop-blur-sm  p-6  ">
       <div className="flex justify-between items-center">
         {/* Title and subtitle */}
         <div>
@@ -26,7 +26,7 @@ const Header: React.FC<HeaderProps> = ({ title, subtitle }) => {
           </button>
 
           <div className="w-10 h-10 bg-gradient-to-r from-pink-500 to-orange-500 rounded-full flex items-center justify-center">
-            <span className="text-white font-bold">A</span>
+            <span className="text-white font-bold">V</span>
           </div>
         </div>
       </div>
