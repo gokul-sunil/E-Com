@@ -5,6 +5,7 @@ import Layout from "./LayoutAdmin";
 import DashboardContent from "./Dashboard";
 import ProductsContent from "./ProductContent";
 import OrdersContent from "./OrdersContent";
+import StaffManagement from "./Staffmanagement";
 
 const App = () => {
   const [activeTab, setActiveTab] = useState("Dashboard");
@@ -13,6 +14,8 @@ const App = () => {
     switch (activeTab) {
       case "Dashboard":
         return <DashboardContent />;
+      case "Staff":
+        return <StaffManagement />;
       case "Products":
         return <ProductsContent />;
       case "Orders":
