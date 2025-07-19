@@ -268,7 +268,7 @@ const StaffManagement = () => {
     const [activeFilter, setActiveFilter] = useState('All');
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
+    const itemsPerPage = 5;
 
     const [staffData, setStaffData] = useState([
         {
@@ -521,7 +521,7 @@ const StaffManagement = () => {
 
                 {/* Staff Table - Scrollable */}
                 <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg flex-1 flex flex-col overflow-hidden">
-                    <div className="flex-1 overflow-x-auto overflow-y-auto max-h-[60vh]">
+                    <div className="flex-1 overflow-x-auto overflow-y-auto">
                         <table className="w-full min-w-[700px]">
                             <thead className="bg-gray-50/80 text-xs sm:text-sm sticky top-0">
                                 <tr>
