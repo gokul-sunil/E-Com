@@ -14,23 +14,74 @@ import {
   Bed,
   ChevronLeft,
   ChevronRight,
-  Package
+  Package,
 } from "lucide-react";
 
 const CategoryManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [newCategoryStatus, setNewCategoryStatus] = useState(true); // true = Active
 
   const [categoryData, setCategoryData] = useState([
-    { id: "CAT-001", name: "Sofas", icon: "sofa", productCount: 124, status: "Active" },
-    { id: "CAT-002", name: "Dining Tables", icon: "dining", productCount: 35, status: "Inactive" },
-    { id: "CAT-003", name: "Chairs", icon: "chair", productCount: 65, status: "Active" },
-    { id: "CAT-004", name: "Tables", icon: "table", productCount: 48, status: "Active" },
-    { id: "CAT-005", name: "Beds", icon: "bed", productCount: 67, status: "Active" },
-    { id: "CAT-006", name: "Wardrobes", icon: "wardrobe", productCount: 23, status: "Inactive" },
-    { id: "CAT-007", name: "Desks", icon: "desk", productCount: 41, status: "Active" },
-    { id: "CAT-008", name: "Cabinets", icon: "cabinet", productCount: 29, status: "Active" },
+    {
+      id: "CAT-001",
+      name: "Sofas",
+      icon: "sofa",
+      productCount: 124,
+      status: "Active",
+    },
+    {
+      id: "CAT-002",
+      name: "Dining Tables",
+      icon: "dining",
+      productCount: 35,
+      status: "Inactive",
+    },
+    {
+      id: "CAT-003",
+      name: "Chairs",
+      icon: "chair",
+      productCount: 65,
+      status: "Active",
+    },
+    {
+      id: "CAT-004",
+      name: "Tables",
+      icon: "table",
+      productCount: 48,
+      status: "Active",
+    },
+    {
+      id: "CAT-005",
+      name: "Beds",
+      icon: "bed",
+      productCount: 67,
+      status: "Active",
+    },
+    {
+      id: "CAT-006",
+      name: "Wardrobes",
+      icon: "wardrobe",
+      productCount: 23,
+      status: "Inactive",
+    },
+    {
+      id: "CAT-007",
+      name: "Desks",
+      icon: "desk",
+      productCount: 41,
+      status: "Active",
+    },
+    {
+      id: "CAT-008",
+      name: "Cabinets",
+      icon: "cabinet",
+      productCount: 29,
+      status: "Active",
+    },
   ]);
 
   const getIcon = (iconType: string) => {
@@ -51,8 +102,8 @@ const CategoryManagement = () => {
   };
 
   const toggleCategoryStatus = (categoryId: string) => {
-    setCategoryData(prev =>
-      prev.map(cat =>
+    setCategoryData((prev) =>
+      prev.map((cat) =>
         cat.id === categoryId
           ? { ...cat, status: cat.status === "Active" ? "Inactive" : "Active" }
           : cat
@@ -70,7 +121,7 @@ const CategoryManagement = () => {
 
   const filteredCategories = useMemo(() => {
     return categoryData.filter(
-      cat =>
+      (cat) =>
         cat.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         cat.id.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -87,18 +138,15 @@ const CategoryManagement = () => {
   }, [searchTerm]);
 
   const handlePreviousPage = () => {
-    setCurrentPage(prev => Math.max(prev - 1, 1));
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
   };
 
   const handleNextPage = () => {
-    setCurrentPage(prev => Math.min(prev + 1, totalPages));
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   };
 
   return (
     <div className="min-h-screen  flex flex-col">
-   
-      
-
       {/* Main Content */}
       <div className="flex-1 p-4 sm:p-6 lg:p-8 flex flex-col mb-20">
         {/* Search + Add */}
@@ -109,11 +157,14 @@ const CategoryManagement = () => {
               type="text"
               placeholder="Search categories"
               value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-12 pr-4 py-3 w-full bg-white/90 backdrop-blur-sm text-gray-900 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-teal-400 shadow-lg"
             />
           </div>
-          <button className="bg-gradient-to-r from-teal-400 to-cyan-500 text-white px-6 py-3 rounded-2xl flex items-center space-x-2 hover:from-teal-500 hover:to-cyan-600 shadow-lg whitespace-nowrap">
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="bg-gradient-to-r from-teal-400 to-cyan-500 text-white px-6 py-3 rounded-2xl flex items-center space-x-2 hover:from-teal-500 hover:to-cyan-600 shadow-lg whitespace-nowrap"
+          >
             <Plus className="w-5 h-5" />
             <span>Add New Category</span>
           </button>
@@ -125,24 +176,38 @@ const CategoryManagement = () => {
             <table className="w-full">
               <thead className="bg-gray-50/80 sticky top-0 z-10">
                 <tr>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Icon</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Category Name</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Category ID</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">No. of products</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Status</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">Actions</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">
+                    Icon
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">
+                    Category Name
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">
+                    Category ID
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">
+                    No. of products
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">
+                    Status
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-600">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {currentCategories.length > 0 ? (
-                  currentCategories.map(category => (
+                  currentCategories.map((category) => (
                     <tr key={category.id} className="hover:bg-gray-50/50">
                       <td className="px-6 py-5">
                         <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center text-gray-600">
                           {getIcon(category.icon)}
                         </div>
                       </td>
-                      <td className="px-6 py-5 font-medium text-gray-900">{category.name}</td>
+                      <td className="px-6 py-5 font-medium text-gray-900">
+                        {category.name}
+                      </td>
                       <td className="px-6 py-5 text-gray-600">{category.id}</td>
                       <td className="px-6 py-5">
                         <span className="px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-sm font-medium">
@@ -172,7 +237,9 @@ const CategoryManagement = () => {
                           >
                             <span
                               className={`h-4 w-4 rounded-full bg-white transform transition-transform ${
-                                category.status === "Active" ? "translate-x-6" : "translate-x-1"
+                                category.status === "Active"
+                                  ? "translate-x-6"
+                                  : "translate-x-1"
                               }`}
                             />
                           </button>
@@ -194,7 +261,10 @@ const CategoryManagement = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                    <td
+                      colSpan={6}
+                      className="px-6 py-12 text-center text-gray-500"
+                    >
                       No categories found matching your search.
                     </td>
                   </tr>
@@ -208,7 +278,8 @@ const CategoryManagement = () => {
             <div className="border-t border-gray-200 bg-white/80 px-6 py-4">
               <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
                 <div className="text-sm text-gray-600">
-                  Showing {startIndex + 1} to {Math.min(endIndex, totalResults)} of {totalResults} results
+                  Showing {startIndex + 1} to {Math.min(endIndex, totalResults)}{" "}
+                  of {totalResults} results
                 </div>
                 <div className="flex items-center space-x-2">
                   <button
@@ -265,6 +336,91 @@ const CategoryManagement = () => {
           )}
         </div>
       </div>
+      {showAddModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-3xl shadow-xl w-full max-w-md p-6 sm:p-8 relative">
+            <h2 className="text-lg font-semibold text-center mb-6 border-b pb-4">
+              Add Category
+            </h2>
+            <div className="flex justify-between">
+              <div className="">
+                <div className="flex justify-center mb-6">
+                  <div className="bg-teal-50 p-4 rounded-full">
+                    <Armchair className="w-10 h-10 text-teal-500" />
+                  </div>
+                </div>
+
+                <div className="flex justify-center mb-4">
+                  <button className="bg-teal-500 text-white px-6 py-2 rounded-full">
+                    Select
+                  </button>
+                </div>
+              </div>
+
+              <div className="">
+                <div className="mb-4">
+                  <label className="block text-sm text-gray-700 mb-1">
+                    Category name
+                  </label>
+                  <input
+                    type="text"
+                    value={newCategoryName}
+                    onChange={(e) => setNewCategoryName(e.target.value)}
+                    placeholder="Enter category name"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-400"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between mb-6">
+                  <span className="text-sm text-gray-700">Status</span>
+                  <div
+                    className={`w-12 h-6 flex items-center rounded-full px-1 cursor-pointer transition-colors duration-300 ${
+                      newCategoryStatus ? "bg-green-500" : "bg-red-500"
+                    }`}
+                    onClick={() => setNewCategoryStatus(!newCategoryStatus)}
+                  >
+                    <div
+                      className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-300 ${
+                        newCategoryStatus ? "translate-x-6" : "translate-x-0"
+                      }`}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-between gap-4">
+                  <button
+                    onClick={() => setShowAddModal(false)}
+                    className="w-full py-3 rounded-xl border border-teal-200 text-teal-600 bg-teal-50 hover:bg-teal-100"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (!newCategoryName.trim()) return;
+                      const newCategory = {
+                        id: `CAT-${(categoryData.length + 1)
+                          .toString()
+                          .padStart(3, "0")}`,
+                        name: newCategoryName,
+                        icon: "chair", // Replace with actual selected icon
+                        productCount: 0,
+                        status: newCategoryStatus ? "Active" : "Inactive",
+                      };
+                      setCategoryData((prev) => [...prev, newCategory]);
+                      setShowAddModal(false);
+                      setNewCategoryName("");
+                      setNewCategoryStatus(true);
+                    }}
+                    className="w-full py-3 rounded-xl bg-gradient-to-r from-teal-400 to-cyan-500 text-white hover:from-teal-500 hover:to-cyan-600"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
