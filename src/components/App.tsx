@@ -6,6 +6,7 @@ import DashboardContent from "./Dashboard";
 import ProductsContent from "./ProductContent";
 import OrdersContent from "./OrdersContent";
 import StaffManagement from "./Staffmanagement";
+import CategoryManagement from "./CategoryManagent";
 
 const App = () => {
   const [activeTab, setActiveTab] = useState("Dashboard");
@@ -16,6 +17,8 @@ const App = () => {
         return <DashboardContent />;
       case "Staff":
         return <StaffManagement />;
+      case "Categories":
+        return <CategoryManagement />;
       case "Products":
         return <ProductsContent />;
       case "Orders":
@@ -23,7 +26,9 @@ const App = () => {
       default:
         return (
           <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6">
-            <h3 className="text-xl font-bold text-gray-800 mb-6">{activeTab}</h3>
+            <h3 className="text-xl font-bold text-gray-800 mb-6">
+              {activeTab}
+            </h3>
             <p className="text-gray-600">
               This is the {activeTab} page content. Add your components here!
             </p>
