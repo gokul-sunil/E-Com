@@ -20,7 +20,7 @@ import {
 const CategoryManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
 
   const [categoryData, setCategoryData] = useState([
     { id: "CAT-001", name: "Sofas", icon: "sofa", productCount: 124, status: "Active" },
