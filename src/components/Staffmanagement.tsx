@@ -1,11 +1,23 @@
-import React, { useState, useMemo } from 'react';
-import { Search, Plus, Edit, Eye, ToggleLeft, ToggleRight, Users, Grid3x3, Network, Package, Archive, FileText, Settings } from 'lucide-react';
+import React, { useState, useMemo, useRef } from 'react';
+import { Search, Plus, Edit, Eye, ToggleLeft, ToggleRight, Users, Grid3x3, Network, Package, Archive, FileText, Settings, X, Upload, Camera } from 'lucide-react';
 
 const StaffManagement = () => {
     const [activeFilter, setActiveFilter] = useState('All');
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
+    const [showModal, setShowModal] = useState(false);
+    const [selectedImage, setSelectedImage] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
+
     const itemsPerPage = 10;
+
+    const [newEmployee, setNewEmployee] = useState({
+        name: '',
+        email: '',
+        role: '',
+        status: true
+    });
 
     const [staffData, setStaffData] = useState([
         {
@@ -146,6 +158,70 @@ const StaffManagement = () => {
         }
     ]);
 
+    const handleOpenModal = () => {
+        setShowModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+        setNewEmployee({
+            name: '',
+            email: '',
+            role: '',
+            status: true
+        });
+        setSelectedImage(null);
+        setImagePreview(null);
+    };
+
+    const handleInputChange = (field: keyof typeof newEmployee, value: string | boolean) => {
+        setNewEmployee(prev => ({
+            ...prev,
+            [field]: value
+        }));
+    };
+
+
+    const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            setSelectedImage(file); // ✅ No more type error
+            const reader = new FileReader();
+            reader.onload = (e: ProgressEvent<FileReader>) => {
+                if (e.target?.result) {
+                    setImagePreview(e.target.result as string);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+
+    const handleUploadClick = () => {
+        fileInputRef.current?.click();
+    };
+
+
+    const handleSave = () => {
+        if (!newEmployee.name || !newEmployee.email || !newEmployee.role) {
+            alert('Please fill in all required fields');
+            return;
+        }
+
+        const newId = `EMP-${String(staffData.length + 1).padStart(3, '0')}`;
+        const newStaff = {
+            id: newId,
+            name: newEmployee.name,
+            email: newEmployee.email,
+            role: newEmployee.role,
+            status: newEmployee.status ? 'Active' : 'Inactive',
+            avatar: imagePreview || '/api/placeholder/40/40'
+        };
+
+        setStaffData(prev => [...prev, newStaff]);
+        handleCloseModal();
+    };
+
     const toggleStaffStatus = (staffId: string) => {
         setStaffData(prevData =>
             prevData.map(staff =>
@@ -222,7 +298,7 @@ const StaffManagement = () => {
             {/* Main Content */}
             <div className="flex-1 flex flex-col p-4 sm:p-6 md:p-8 overflow-auto">
                 {/* Search and Add Button */}
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+                <div className="flex flex-col sm:flex-row justify-end items-start sm:items-center gap-4 mb-4">
                     <div className="relative w-full sm:w-80">
                         <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
                         <input
@@ -233,7 +309,10 @@ const StaffManagement = () => {
                             className="pl-10 pr-4 py-2 w-full bg-white/80 backdrop-blur-sm text-black border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent"
                         />
                     </div>
-                    <button className="bg-gradient-to-r from-teal-400 to-cyan-500 text-black px-5 py-2 rounded-full flex items-center space-x-2 hover:from-teal-500 hover:to-cyan-600 transition-all duration-200 shadow-lg whitespace-nowrap">
+                    <button
+                        onClick={handleOpenModal}
+                        className="bg-gradient-to-r from-teal-400 to-cyan-500 text-black px-5 py-2 rounded-full flex items-center space-x-2 hover:from-teal-500 hover:to-cyan-600 transition-all duration-200 shadow-lg whitespace-nowrap"
+                    >
                         <Plus className="w-5 h-5" />
                         <span className="text-sm sm:text-base">Add New Staff</span>
                     </button>
@@ -389,9 +468,146 @@ const StaffManagement = () => {
                     )}
                 </div>
             </div>
+
+            {/* Add Employee Modal */}
+            {showModal && (
+                <div className="fixed inset-0 bg-gray-100/50 bg-opacity-50 flex items-center justify-center p-4 z-50">
+                    <div className="bg-white rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+                        {/* Modal Header */}
+                        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                            <h2 className="text-xl font-semibold text-gray-900">Add Employee</h2>
+                            <button
+                                onClick={handleCloseModal}
+                                className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                            >
+                                <X className="w-5 h-5 text-gray-500" />
+                            </button>
+                        </div>
+
+                        {/* Modal Body */}
+                        <div className="p-6 space-y-6">
+                            {/* Profile Picture Section */}
+                            <div className="flex items-start space-x-4">
+                                <div className="flex flex-col items-center">
+                                    <div className="w-20 h-20 rounded-full overflow-hidden bg-gradient-to-br from-red-400 to-pink-500 flex items-center justify-center">
+                                        {imagePreview ? (
+                                            <img
+                                                src={imagePreview}
+                                                alt="Preview"
+                                                className="w-full h-full object-cover"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full bg-gradient-to-br from-red-400 to-pink-500 flex items-center justify-center">
+                                                <span className="text-white text-xl font-medium">
+                                                    {newEmployee.name ? newEmployee.name.charAt(0).toUpperCase() : (
+                                                        <Camera className="w-6 h-6 text-white" />
+                                                    )}
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <button
+                                        onClick={handleUploadClick}
+                                        className="mt-3 bg-cyan-400 hover:bg-cyan-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
+                                    >
+                                        Upload
+                                    </button>
+                                    <input
+                                        ref={fileInputRef}
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImageUpload}
+                                        className="hidden"
+                                    />
+                                </div>
+
+                                <div className="flex-1 space-y-4">
+                                    {/* Employee Name */}
+                                    <div>
+                                        <label className="block text-red text-sm font-medium text-gray-700 mb-1">
+                                            Employee name
+                                        </label>
+                                        <input
+                                            type="text"
+                                            placeholder="Enter employee name"
+                                            value={newEmployee.name}
+                                            onChange={(e) => handleInputChange('name', e.target.value)}
+                                            className="w-full px-3 py-2 text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent"
+                                        />
+                                    </div>
+
+                                    {/* Role Dropdown */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            Role
+                                        </label>
+                                        <select
+                                            value={newEmployee.role}
+                                            onChange={(e) => handleInputChange('role', e.target.value)}
+                                            className="w-full px-3 py-2 text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent appearance-none bg-white"
+                                        >
+                                            <option value="">Select role</option>
+                                            <option value="Admin">Admin</option>
+                                            <option value="Staff">Staff</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Email */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Email
+                                </label>
+                                <input
+                                    type="email"
+                                    placeholder="Enter email address"
+                                    value={newEmployee.email}
+                                    onChange={(e) => handleInputChange('email', e.target.value)}
+                                    className="w-full px-3 py-2 text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent"
+                                />
+                            </div>
+
+                            {/* Status */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Status
+                                </label>
+                                <div className="flex items-center space-x-3">
+                                    <span className="text-sm text-gray-600">Active</span>
+                                    <button
+                                        onClick={() => handleInputChange('status', !newEmployee.status)}
+                                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ${newEmployee.status
+                                            ? 'bg-cyan-400 hover:bg-cyan-500'
+                                            : 'bg-gray-300 hover:bg-gray-400'
+                                            }`}
+                                    >
+                                        <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 ${newEmployee.status ? 'translate-x-6' : 'translate-x-1'}`} />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Modal Footer */}
+                        <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
+                            <button
+                                onClick={handleCloseModal}
+                                className="px-6 py-2 text-gray-600 hover:text-gray-800 font-medium transition-colors duration-200"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleSave}
+                                className="px-6 py-2 bg-cyan-400 hover:bg-cyan-500 text-white rounded-lg font-medium transition-colors duration-200"
+                            >
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
-
 };
 
 export default StaffManagement;
