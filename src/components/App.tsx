@@ -7,6 +7,7 @@ import ProductsContent from "./ProductContent";
 import OrdersContent from "./OrdersContent";
 import StaffManagement from "./Staffmanagement";
 import CategoryManagement from "./CategoryManagent";
+import StockManagement from "./Stockmanagement";
 
 const App = () => {
   const [activeTab, setActiveTab] = useState("Dashboard");
@@ -23,6 +24,8 @@ const App = () => {
         return <ProductsContent />;
       case "Orders":
         return <OrdersContent />;
+      case "Stocks":
+        return <StockManagement />;
       default:
         return (
           <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6">
