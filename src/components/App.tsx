@@ -8,6 +8,7 @@ import OrdersContent from "./OrdersContent";
 import StaffManagement from "./Staffmanagement";
 import CategoryManagement from "./CategoryManagent";
 import StockManagement from "./Stockmanagement";
+import Payment from "./Payment";
 
 const App = () => {
   const [activeTab, setActiveTab] = useState("Dashboard");
@@ -26,6 +27,8 @@ const App = () => {
         return <OrdersContent />;
       case "Stocks":
         return <StockManagement />;
+      case "Payments":
+        return <Payment />;
       default:
         return (
           <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6">
